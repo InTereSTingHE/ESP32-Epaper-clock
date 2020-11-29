@@ -9,4 +9,6 @@
 #### 天气API key获取  
 [心知天气](https://www.seniverse.com/api)  
 ## TODO  
-增加时间显示、局部刷新
+增加时间显示、局部刷新、汉字字模、气象图片显示
+
+*可修改[seu-wlan登陆脚本](https://github.com/InTereSTingHE/seu-wlan-on-openwrt)使ESP32直接连接seu-wlan*
