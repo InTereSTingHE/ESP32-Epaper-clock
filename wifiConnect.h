@@ -1,7 +1,7 @@
 #include <WiFi.h>
 
-const char *ssid = "AVALON"; //"your ssid";
-const char *password = "670634468zzy";   //"your password";
+const char *ssid = "XXXXXX"; // Your ssid
+const char *password = "XXXXXXXX";   // Your password
 
 IPAddress myIP;
 
