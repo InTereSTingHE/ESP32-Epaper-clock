@@ -60,7 +60,7 @@ void loop() {
 
         const char* url_time = "http://quan.suning.com/getSysTime.do";
 
-        const char* url_weather = "https://api.seniverse.com/v3/weather/now.json?key=Su0QnkjQu_OR9-m4I&location=wuxi&language=en&unit=c";
+        const char* url_weather = "https://api.seniverse.com/v3/weather/now.json?key=XXXXXXXXXXXXXXXXX&location=wuxi&language=en&unit=c";// add your own key!
 
         const char* url_QW = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=cf4dcd08f31648b2b2efad08de8ff7de";
 
