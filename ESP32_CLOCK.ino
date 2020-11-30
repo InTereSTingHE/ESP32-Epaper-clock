@@ -31,7 +31,7 @@ void setup() {
 
     
     /*
-    // supposed to work, not recommanded, edit wifiConnect.h first
+    // supposed to work, not recommended, edit wifiConnect.h first
     // seu-wlan login, add ID & IP address
     const char* url_seuwlan = "http://10.9.10.100:801/eportal/?c=Portal&a=login&callback=dr1003&login_method=1&user_account=%2C0%2CXXXXXXXXX&user_password=123456&wlan_user_ip=10.11.XXX.XXX&wlan_user_ipv6=&wlan_user_mac=000000000000&wlan_ac_ip=10.1.1.1&wlan_ac_name=&jsVersion=3.3.2&v=6886"
     // seu login
