@@ -1,5 +1,6 @@
 ## 施工中🚧
 #### 已实现天气显示
+#### seu-wlan直连(not recommended)
 # ESP32-Epaper-clock  
 ## E-paper with ESP32 module showing weather &amp; so on  
 ### 使用微雪ESP32墨水屏驱动模块及2.9寸墨水屏  
@@ -12,5 +13,3 @@
 [心知天气](https://www.seniverse.com/api)  
 ## TODO  
 增加时间显示、局部刷新、汉字字模、气象图片显示
-
-*可修改[seu-wlan登陆脚本](https://github.com/InTereSTingHE/seu-wlan-on-openwrt)使ESP32直接连接seu-wlan*
