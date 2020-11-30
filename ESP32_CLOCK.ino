@@ -29,6 +29,8 @@ const char* url_weather = "https://api.seniverse.com/v3/weather/now.json?key=XXX
 // QWeather API, can't resolve, don't know why
 const char* url_QW = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=XXX";
 
+bool wifi_status = 0;
+
 void setup() {
   // put your setup code here, to run once:
     // Serial port initialization
@@ -128,7 +130,17 @@ void loop() {
                     
                     EPD_2IN9_Init(EPD_2IN9_PART);
                     Paint_SelectImage(BlackImage);
-                    // Paint_Clear(WHITE);
+                    if (wifi_status == false){
+                        Paint_Clear(WHITE);
+                        Paint_DrawString_CN(180, 0,"你好", &Font24CN, BLACK, WHITE);
+                        Paint_DrawString_EN(10, 0, "InTereSTingHE", &Font16, WHITE, BLACK);
+                        Paint_DrawString_EN(10, 20, "WIFI Connected", &Font16, BLACK, WHITE);
+
+                        Paint_DrawString_EN(10, 65, "Weather", &Font12, WHITE, BLACK);       
+                        Paint_DrawString_EN(10, 85, "Temperature", &Font12, WHITE, BLACK);
+                        Paint_DrawString_EN(140, 80, "C", &Font24, WHITE, BLACK);
+                        Paint_DrawString_EN(10, 100, "Last Update", &Font12, WHITE, BLACK);
+                    }
 
                     Paint_ClearWindows(10, 40, 10 + Font16.Width * 23, 40 + Font16.Height, WHITE);
                     Paint_DrawString_EN(10, 40, pchar, &Font16, WHITE, BLACK);
@@ -146,8 +158,12 @@ void loop() {
 
                     // timestamp = time1[11];
                 // }
+
+                wifi_status = true;
+
         }else {
 
+                wifi_status = false;
                 Paint_SelectImage(BlackImage);
                 Paint_Clear(WHITE);
 
