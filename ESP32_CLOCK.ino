@@ -18,6 +18,16 @@ DynamicJsonDocument doc_weather(512);
 DynamicJsonDocument doc_time(512);
 
 int timestamp = 10;
+UBYTE *BlackImage;
+UWORD Imagesize = ((EPD_2IN9_WIDTH % 8 == 0)? (EPD_2IN9_WIDTH / 8 ): (EPD_2IN9_WIDTH / 8 + 1)) * EPD_2IN9_HEIGHT;
+
+const char* url_time = "http://quan.suning.com/getSysTime.do";
+
+// add your own seniverse key!
+const char* url_weather = "https://api.seniverse.com/v3/weather/now.json?key=XXX&location=wuxi&language=en&unit=c";
+
+// QWeather API, can't resolve, don't know why
+const char* url_QW = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=XXX";
 
 void setup() {
   // put your setup code here, to run once:
@@ -37,7 +47,7 @@ void setup() {
     http_seu.GET();
     */
 
-    printf("Start\r\n");
+    printf("EPD_2IN9_test Demo\r\n");
 
     EPD_initSPI_1();
 
@@ -48,14 +58,14 @@ void setup() {
     DEV_Delay_ms(500);
 
     //Create a new image cache
-    UBYTE *BlackImage;
+    
     // you have to edit the startup_stm32fxxx.s file and set a big enough heap size 
-    UWORD Imagesize = ((EPD_2IN9_WIDTH % 8 == 0)? (EPD_2IN9_WIDTH / 8 ): (EPD_2IN9_WIDTH / 8 + 1)) * EPD_2IN9_HEIGHT;
+    
     if((BlackImage = (UBYTE *)malloc(Imagesize)) == NULL) {
         printf("Failed to apply for black memory...\r\n");
         while(1);
     }
-    printf("Paint_NewImage\r\n");
+    printf("Start\r\n");
     Paint_NewImage(BlackImage, EPD_2IN9_WIDTH, EPD_2IN9_HEIGHT, 270, WHITE);
 
     Paint_SelectImage(BlackImage);
@@ -71,99 +81,88 @@ void setup() {
     Paint_DrawString_EN(10, 100, "Last Update", &Font12, WHITE, BLACK);
     EPD_2IN9_Display(BlackImage);
 
-    const char* url_time = "http://quan.suning.com/getSysTime.do";
-
-    // add your own seniverse key!
-    const char* url_weather = "https://api.seniverse.com/v3/weather/now.json?key=XXXXXXXXXXXXXXXXX&location=wuxi&language=en&unit=c";
-
-    // QWeather API, can't resolve, don't know why
-    const char* url_QW = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=XXXXXXXXXXXXX";
-
-    while(1){
-
-        if ((WiFi.status() == WL_CONNECTED)){
-            HTTPClient http_weather;
-            HTTPClient http_time;
-
-            http_weather.begin(url_weather);
-            http_time.begin(url_time);
-            http_time.GET(); 
-
-            int httpCodeWeather = http_weather.GET();  
-
-            if (httpCodeWeather > 0) { //检查返回的代码
-
-                    String payload_weather = http_weather.getString();
-                    String payload_time = http_time.getString();
-
-                    deserializeJson(doc_weather, payload_weather);
-                    String weather = doc_weather["results"][0]["now"]["text"].as<String>();
-                    String temperature = doc_weather["results"][0]["now"]["temperature"].as<String>();
-                    String path = doc_weather["results"][0]["location"]["path"].as<String>();
-                    String last = doc_weather["results"][0]["last_update"].as<String>();
-
-                    const char* wchar = weather.c_str();
-                    const char* tchar = temperature.c_str();
-                    const char* pchar = path.c_str();
-                    const char* lchar = last.c_str();
-
-                    Serial.println(payload_time);
-                    deserializeJson(doc_time, payload_time);
-                    String time1 = doc_time["sysTime1"].as<String>();
-
-                    // hour[0] = time1[8];//20201124191911
-                    Serial.println(time1);
-                    //Serial.println(hour);
-
-                    Serial.println(weather);
-
-                    Serial.println(payload_weather);
-
-                    // if(time1[11] != timestamp || flag_first){                   
-                        
-                        EPD_2IN9_Init(EPD_2IN9_PART);
-                        Paint_SelectImage(BlackImage);
-                        // Paint_Clear(WHITE);
-
-                        Paint_ClearWindows(10, 40, 10 + Font16.Width * 23, 40 + Font16.Height, WHITE);
-                        Paint_DrawString_EN(10, 40, pchar, &Font16, WHITE, BLACK);
-
-                        Paint_ClearWindows(100, 60, 100 + Font24.Width * 10, 60 + Font24.Height, WHITE);
-                        Paint_DrawString_EN(100, 60, wchar, &Font24, WHITE, BLACK);
-
-                        Paint_ClearWindows(100, 80, 100 + Font24.Width * 2, 80 + Font24.Height, WHITE);
-                        Paint_DrawString_EN(100, 80, tchar, &Font24, WHITE, BLACK);
-
-                        Paint_ClearWindows(10, 115, 10 + Font12.Width * 27, 115 + Font12.Height, WHITE);
-                        Paint_DrawString_EN(10, 115, lchar, &Font12, WHITE, BLACK);
-
-                        EPD_2IN9_Display(BlackImage);
-
-                        // timestamp = time1[11];
-                    // }
-            }else {
-
-                    Paint_SelectImage(BlackImage);
-                    Paint_Clear(WHITE);
-
-                    Paint_DrawString_EN(10, 0, "InTereSTingHE", &Font16, WHITE, BLACK);
-
-                    Paint_DrawString_EN(10, 40, "WIFI LOSE !!!", &Font24, BLACK, WHITE);
-
-                    EPD_2IN9_Display(BlackImage);
-                    Serial.println("Error on HTTP request");
-
-            }
-
-            http_weather.end(); //释放资源
-
-            delay(10000);
-
-        }
-    }
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
 
+
+    if ((WiFi.status() == WL_CONNECTED)){
+        HTTPClient http_weather;
+        HTTPClient http_time;
+
+        http_weather.begin(url_weather);
+        http_time.begin(url_time);
+        http_time.GET(); 
+
+        int httpCodeWeather = http_weather.GET();  
+
+        if (httpCodeWeather > 0) { //检查返回的代码
+
+                String payload_weather = http_weather.getString();
+                String payload_time = http_time.getString();
+
+                deserializeJson(doc_weather, payload_weather);
+                String weather = doc_weather["results"][0]["now"]["text"].as<String>();
+                String temperature = doc_weather["results"][0]["now"]["temperature"].as<String>();
+                String path = doc_weather["results"][0]["location"]["path"].as<String>();
+                String last = doc_weather["results"][0]["last_update"].as<String>();
+
+                const char* wchar = weather.c_str();
+                const char* tchar = temperature.c_str();
+                const char* pchar = path.c_str();
+                const char* lchar = last.c_str();
+
+                Serial.println(payload_time);
+                deserializeJson(doc_time, payload_time);
+                String time1 = doc_time["sysTime1"].as<String>();
+
+                // hour[0] = time1[8];//20201124191911
+                Serial.println(time1);
+                //Serial.println(hour);
+
+                Serial.println(weather);
+                Serial.println(payload_weather);
+
+                // if(time1[11] != timestamp || flag_first){                   
+                    
+                    EPD_2IN9_Init(EPD_2IN9_PART);
+                    Paint_SelectImage(BlackImage);
+                    // Paint_Clear(WHITE);
+
+                    Paint_ClearWindows(10, 40, 10 + Font16.Width * 23, 40 + Font16.Height, WHITE);
+                    Paint_DrawString_EN(10, 40, pchar, &Font16, WHITE, BLACK);
+
+                    Paint_ClearWindows(100, 60, 100 + Font24.Width * 10, 60 + Font24.Height, WHITE);
+                    Paint_DrawString_EN(100, 60, wchar, &Font24, WHITE, BLACK);
+
+                    Paint_ClearWindows(100, 80, 100 + Font24.Width * 2, 80 + Font24.Height, WHITE);
+                    Paint_DrawString_EN(100, 80, tchar, &Font24, WHITE, BLACK);
+
+                    Paint_ClearWindows(10, 115, 10 + Font12.Width * 27, 115 + Font12.Height, WHITE);
+                    Paint_DrawString_EN(10, 115, lchar, &Font12, WHITE, BLACK);
+
+                    EPD_2IN9_Display(BlackImage);
+
+                    // timestamp = time1[11];
+                // }
+        }else {
+
+                Paint_SelectImage(BlackImage);
+                Paint_Clear(WHITE);
+
+                Paint_DrawString_EN(10, 0, "InTereSTingHE", &Font16, WHITE, BLACK);
+
+                Paint_DrawString_EN(10, 40, "WIFI LOSE !!!", &Font24, BLACK, WHITE);
+
+                EPD_2IN9_Display(BlackImage);
+                Serial.println("Error on HTTP request");
+
+        }
+
+        http_weather.end(); //释放资源
+
+        delay(10000);
+
+    }
 }
