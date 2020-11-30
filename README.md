@@ -1,7 +1,7 @@
 ## 施工中🚧
 ### 已实现
 天气显示  
-seu-wlan直连(not recommended)  
+seu-wlan直连
 局部刷新  
 
 # ESP32-Epaper-clock  
