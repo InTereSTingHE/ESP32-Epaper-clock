@@ -29,6 +29,16 @@ void setup() {
     // Server initialization
     wifi_setup();
 
+    
+    /*
+    // supposed to work, not recommanded, edit wifiConnect.h first
+    // seu-wlan login, add ID & IP address
+    const char* url_seuwlan = "http://10.9.10.100:801/eportal/?c=Portal&a=login&callback=dr1003&login_method=1&user_account=%2C0%2CXXXXXXXXX&user_password=123456&wlan_user_ip=10.11.XXX.XXX&wlan_user_ipv6=&wlan_user_mac=000000000000&wlan_ac_ip=10.1.1.1&wlan_ac_name=&jsVersion=3.3.2&v=6886"
+    // seu login
+    http_seu.begin(url_seuwlan);
+    http_seu.GET();
+    */
+
     printf("EPD_2IN9_test Demo\r\n");
 
     EPD_initSPI_1();
@@ -60,9 +70,11 @@ void loop() {
 
         const char* url_time = "http://quan.suning.com/getSysTime.do";
 
-        const char* url_weather = "https://api.seniverse.com/v3/weather/now.json?key=XXXXXXXXXXXXXXXXX&location=wuxi&language=en&unit=c";// add your own key!
+        // add your own key!
+        const char* url_weather = "https://api.seniverse.com/v3/weather/now.json?key=XXXXXXXXXXXXXXXXX&location=wuxi&language=en&unit=c";
 
-        const char* url_QW = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=cf4dcd08f31648b2b2efad08de8ff7de";
+        // QWeather API, can't resolve, don't know why
+        const char* url_QW = "https://devapi.qweather.com/v7/weather/now?location=101010100&key=XXXXXXXXXXXXXX"; 
 
         http_weather.begin(url_weather);
         http_time.begin(url_time);
